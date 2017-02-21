@@ -24,10 +24,10 @@ class Book(object):
         self.title = bookinfo['title']
         self.link_title = '[{title}]({url})'.format(
             title=self.title, url=self.url)
-        self.pubdate = bookinfo['pubdate']
-        self.pagenum = bookinfo['pages']
         self.rating = bookinfo['rating']['average']
         self.ratenum = bookinfo['rating']['numRaters']
+        self.pubdate = bookinfo['pubdate']
+        self.pagenum = bookinfo['pages']
         self.author = ','.join(bookinfo['author'])
 
     # 提取被标记频次最多的3个标签
@@ -39,7 +39,7 @@ class Book(object):
 
     @property
     def entry(self):
-        book_entry = '|{bn}|{pd}|{pn}|{rt}|{rn}|{au}|{tags}|'.format(
+        book_entry = '|{bn}|{rt}|{rn}|{tags}|{pd}|{pn}|{au}|'.format(
             bn=self.link_title,
             au=self.author, pd=self.pubdate, pn=self.pagenum,
             rt=self.rating, rn=self.ratenum, tags=self.tags
@@ -53,7 +53,7 @@ class Category(object):
     @property
     def entry(self):
         title = '##' + self.title
-        header = '|书名|出版日期|页数|豆瓣评分|评分人数|作者|常用标签|'
+        header = '|书名|豆瓣评分|评分人数|常用标签|出版日期|页数|作者|'
         line = '|---|---|---|---|---|---|---|'
         cat_entry = '\n'.join((title, header, line))
         return '\n' + cat_entry + '\n'
