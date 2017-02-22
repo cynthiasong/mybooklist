@@ -14,12 +14,30 @@ import time
 
 
 class Book(object):
-    def __init__(self, searchname, kw=None):
-        search_url = 'https://api.douban.com/v2/book/search?{q}&{c}'.format(
-            q='q='+searchname, c='count=1'
-        )
-        bookinfo = requests.get(search_url).json()['books'][0]
-        self.id = bookinfo['id']
+    def __init__(self, searchkey='', bookid=None):
+        # 如果有书籍id，根据id获取书籍信息
+        if bookid:
+            search_url = 'https://api.douban.com/v2/book/{bid}'.format(bid=bookid)
+            bookinfo = requests.get(search_url).json()
+            print('正在检索 -> {bid}'.format(bid=bookid))
+        # 否则检索关键词，获取返回的第1本书
+        else:
+            search_url = 'https://api.douban.com/v2/book/search?{q}&{c}'.format(
+                q='q='+searchkey, c='count=1'
+            )
+            print('正在检索 -> {sk}'.format(sk=searchkey))
+            books = requests.get(search_url).json()['books']
+            try:
+                bookinfo = books[0]
+            except IndexError:
+                bookinfo = {}
+        try:
+            self.id = bookinfo['id']
+        except KeyError:
+            print('运行失败 -> 没有找到符合条件的书籍，请修改描述后重新运行'.format(
+                sn=searchkey
+            ))
+            exit()
         self.url = 'https://book.douban.com/subject/{id}'.format(id=self.id)
         self.title = bookinfo['title']
         self.link_title = '[{title}]({url})'.format(
@@ -70,14 +88,19 @@ def transform():
         category = Category(catname)
         output += category.entry
         print('成功添加类别 -> {cat}'.format(cat=catname))
-        # 获取待搜索的书籍列表（添加必要的补充关键词以便搜索）
-        book_list = re.findall('《(.*?)》(.*?)?\n', seg)
-        search_list = [' '.join(item).strip() for item in book_list]
+        lines = [line for line in seg.split('\n')[1:] if len(line)>0]
         # 遍历获取书籍信息，添加到表格
-        for searchname in search_list:
-            book = Book(searchname)
+        for line in lines:
+            # 搜索关键词
+            search_keywords = [w.strip() for w in re.split(r'《|》|id\s*\d+', line) if len(w)>0]
+            searchkey = '+'.join(search_keywords)
+            # 书籍id
+            id_info = re.search(r'id\s*(\d+)', line)
+            bookid = int(id_info.group(1)) if id_info else None
+
+            book = Book(searchkey, bookid)
             output += book.entry
-            print('成功获取信息 -> 书名:《{bn}》; 作者: {au}'.format(
+            print('成功获取 -> 书名:《{bn}》; 作者: {au}\n'.format(
                 bn=book.title, au=book.author
             ))
 
@@ -89,7 +112,8 @@ def transform():
 
     with open('README.md', 'w', encoding='utf-8') as final:
         final.write(output)
-    print('\n成功保存在README.md')
+    print('结果成功保存在README.md')
+
 
 if __name__ == '__main__':
     transform()
