@@ -71,7 +71,7 @@ class Category(object):
     @property
     def entry(self):
         title = '##' + self.title
-        header = '|书名|豆瓣评分|评分人数|常用标签|出版日期|页数|作者|'
+        header = '|书名|豆瓣评分|评分人数|常用标签|出版时间|页数|作者|'
         line = '|---|---|---|---|---|---|---|'
         cat_entry = '\n'.join((title, header, line))
         return '\n' + cat_entry + '\n'
@@ -96,7 +96,7 @@ def transform():
             searchkey = '+'.join(search_keywords)
             # 书籍id
             id_info = re.search(r'id\s*(\d+)', line)
-            bookid = int(id_info.group(1)) if id_info else None
+            bookid = id_info.group(1) if id_info else None
 
             book = Book(searchkey, bookid)
             output += book.entry

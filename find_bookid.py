@@ -1,4 +1,6 @@
+# 获取搜索书籍列表，以便选择正确的书籍id
 import requests
+
 
 def find_bookid(searchkey, count=20):
     search_url = 'https://api.douban.com/v2/book/search?{q}&{c}'.format(
