@@ -6,7 +6,7 @@
 
 # 使用：
 # 使用前先安装requests（pip install requests）
-# 安装后直接运行本脚本即可（python transform.py）
+# 安装后直接运行本脚本即可（python main.py）
 
 import requests
 import re
