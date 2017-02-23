@@ -15,4 +15,4 @@ def find_bookid(searchkey, count=20):
 if __name__ == '__main__':
     # 运行：find_book('搜索关键词')
     # 从输出结果中选择想要的书籍id，写入RAWLIST.md中
-    find_bookid('经济学原理+第7版')
+    find_bookid('心理学：第三版')
