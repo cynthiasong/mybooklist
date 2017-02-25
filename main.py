@@ -70,7 +70,7 @@ class Category(object):
 
     @property
     def entry(self):
-        title = '##' + self.title
+        title = '## ' + self.title + '\n'
         header = '|书名|豆瓣评分|评分人数|常用标签|出版时间|页数|作者|'
         line = '|---|---|---|---|---|---|---|'
         cat_entry = '\n'.join((title, header, line))
